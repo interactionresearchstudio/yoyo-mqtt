@@ -1,7 +1,23 @@
-const aedes = require('aedes')()
-const server = require('net').createServer(aedes.handle)
-const port = 1883
+const mqemitter = require('mqemitter-mongodb');
+const mongoPersistence = require('aedes-persistence-mongodb');
+const port = 1883;
+const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost/aedes-clusters';
 
+
+
+const aedes = require('aedes')({
+  id: 'YOYO_BROKER',
+    mq: mqemitter({
+      url: MONGO_URL
+    }),
+    persistence: mongoPersistence({
+      url: MONGO_URL,
+      ttl: {
+        packets: 300, // Number of seconds
+        subscriptions: 300
+      }
+    })
+});
 
 aedes.on('subscribe', function (subscriptions, client) {
   console.log('MQTT client \x1b[32m' + (client ? client.id : client) +
@@ -29,6 +45,7 @@ aedes.on('publish', async function (packet, client) {
   console.log('Client \x1b[32m' + (client ? client.id : 'BROKER_' + aedes.id) + '\x1b[0m has published', packet.payload.toString(), 'on', packet.topic, 'to broker')
 });
 
+const server = require('net').createServer(aedes.handle);
 server.listen(port, () => {
   console.log('Server started on port ', port);
 });
