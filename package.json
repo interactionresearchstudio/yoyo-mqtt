@@ -1,0 +1,19 @@
+{
+  "name": "yoyo-mqtt",
+  "version": "1.0.0",
+  "description": "Yo-Yo Machines MQTT Broker",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha test"
+  },
+  "keywords": [
+    "mqtt",
+    "iot"
+  ],
+  "author": "Mike Vanis",
+  "license": "ISC",
+  "dependencies": {
+    "aedes": "^0.43.0"
+  }
+}
