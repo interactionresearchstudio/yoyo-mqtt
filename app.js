@@ -1,9 +1,9 @@
+const http = require('http');
 const mqemitter = require('mqemitter-mongodb');
 const mongoPersistence = require('aedes-persistence-mongodb');
 const port = 1883;
 const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost/aedes-clusters';
-
-
+const httpPort = process.env.PORT || 5000;
 
 const aedes = require('aedes')({
   id: 'YOYO_BROKER',
@@ -48,4 +48,14 @@ aedes.on('publish', async function (packet, client) {
 const server = require('net').createServer(aedes.handle);
 server.listen(port, () => {
   console.log('Server started on port ', port);
+});
+
+const httpServer = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Nothing to see here...');
+});
+
+httpServer.listen(httpPort, () => {
+  console.log(`Server running at port ${httpPort}/`);
 });
